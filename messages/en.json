@@ -1,0 +1,16 @@
+{
+  "Home": {
+    "title": "BoilerPlate",
+    "content": "This is an example content"
+  },
+  "Navbar": {
+    "links": {
+      "home": "Home",
+      "example": "Example"
+    },
+    "language": {
+      "pl": "Polish",
+      "en": "English"
+    }
+  }
+}

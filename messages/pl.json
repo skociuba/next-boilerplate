@@ -1,0 +1,16 @@
+{
+  "Home": {
+    "title": "Templatka",
+    "content": "To jest przykładowa treść"
+  },
+  "Navbar": {
+    "links": {
+      "home": "Strona główna",
+      "example": "Strona przykładowa"
+    },
+    "language": {
+      "pl": "Polski",
+      "en": "Angielski"
+    }
+  }
+}
