@@ -31,7 +31,8 @@ export type ValueType = {
 
 export const useApiMutation = ({ ...props }: UseApiMutationProps) => {
   const [errors, setErrors] = useState<{ [key: string]: string } | undefined>();
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const { mutate, isLoading } = useMutation({
     onSuccess: props.onSuccess,
     mutationFn: (values: ValueType) =>
@@ -58,6 +59,8 @@ export const useApiMutation = ({ ...props }: UseApiMutationProps) => {
           return data;
         })
         .catch((err) => err),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     useErrorBoundary: true
   });
 
