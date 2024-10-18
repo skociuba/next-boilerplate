@@ -1,6 +1,6 @@
 import { render, screen } from '@/tests/test-utils';
 import { waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+//import userEvent from '@testing-library/user-event';
 
 import { useApiQuery } from './../../hooks/api/useApiQuery';
 import Example from './page';

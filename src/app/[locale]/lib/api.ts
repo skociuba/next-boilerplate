@@ -18,6 +18,7 @@ type fetchRequestProps = {
       | null
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       | { [key: string]: any }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       | { [key: string]: any }[];
   };
 };
@@ -49,6 +50,7 @@ const generateRequestUrl = ({
   let url = `${API_BASE}${API_ENDPOINTS[route].endpoint}${activeId ? `/${activeId}` : ''}`;
 
   if (params || values?.params) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let allParams: { [key: string]: any } = {};
 
     if (params) {
@@ -161,8 +163,7 @@ export const fetchRequest = async ({
   values,
   id,
   params,
-  getFile,
-  refresh
+  getFile
 }: fetchRequestProps) => {
   try {
     const requestOptions = {
