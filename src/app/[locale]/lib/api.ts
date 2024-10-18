@@ -89,6 +89,8 @@ const generateRequestUrl = ({
             return value;
           },
           encoder: (value, type) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             if (type === 'key') {
               return value;
             }
