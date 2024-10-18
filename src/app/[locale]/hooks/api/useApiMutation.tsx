@@ -12,7 +12,7 @@ export type UseApiMutationProps = {
   values?: { [key: string]: string };
   params?: { [key: string]: string };
   method: 'POST' | 'PUT' | 'DELETE' | 'GET' | 'PATCH';
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSuccess?: (data: any) => void;
 };
 
@@ -25,7 +25,7 @@ export type ValueType = {
     | null
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | { [key: string]: any }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | { [key: string]: any }[];
 };
 

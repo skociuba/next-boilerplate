@@ -1,7 +1,6 @@
-import { Inter } from 'next/font/google';
-
-import './styles/globals.css';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { Inter } from 'next/font/google';
+import './styles/globals.css';
 
 import Navbar from './components/navbar';
 import ReactQueryProvider from './providers/ReactQueryProvider';
