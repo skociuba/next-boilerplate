@@ -1,8 +1,9 @@
+import { render, screen } from '@/tests/test-utils';
 import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@/tests/test-utils';
-import Example from './page';
+
 import { useApiQuery } from './../../hooks/api/useApiQuery';
+import Example from './page';
 
 jest.mock('./../../hooks/api/useApiQuery');
 

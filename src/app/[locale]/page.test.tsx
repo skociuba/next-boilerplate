@@ -1,7 +1,8 @@
 import { render, screen } from '@/tests/test-utils';
 import { NextIntlClientProvider } from 'next-intl';
-import ReactQueryProvider from './providers/ReactQueryProvider';
+
 import HomePage from './page';
+import ReactQueryProvider from './providers/ReactQueryProvider';
 
 const messages = {
   Home: {

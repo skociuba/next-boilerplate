@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+
 import { useApiQuery } from './../../hooks/api/useApiQuery';
 const Example = () => {
   const { data, isLoading, error } = useApiQuery({
@@ -12,6 +13,7 @@ const Example = () => {
   if (error) {
     return <div>An error has occurred: {error.message}</div>;
   }
+
   return (
     <div className="mx-auto mt-4 px-4 max-w-screen-lg">
       {data && (
