@@ -1,14 +1,13 @@
 import { render, RenderOptions } from '@testing-library/react';
 import { ReactElement } from 'react';
+import ReactQueryProvider from '../src/app/[locale]/providers/ReactQueryProvider';
 
 type ProvidersProps = {
   readonly children?: any;
 };
 
-// Add in any providers here if necessary:
-// (ReduxProvider, ThemeProvider, etc)
 const Providers = ({ children }: ProvidersProps) => {
-  return children;
+  return <ReactQueryProvider>{children}</ReactQueryProvider>;
 };
 
 const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
