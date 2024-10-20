@@ -33,7 +33,7 @@ describe('Example component', () => {
 
     render(<Example />);
 
-    expect(screen.getByText('An error has occurred: Failed to fetch')).toBeInTheDocument();
+    expect(screen.getByText('Failed to fetch')).toBeInTheDocument();
   });
 
   it('displays data when fetch is successful', async () => {
