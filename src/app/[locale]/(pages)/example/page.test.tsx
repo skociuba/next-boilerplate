@@ -21,7 +21,7 @@ describe('Example component', () => {
 
     render(<Example />);
 
-    expect(screen.queyByText('delectus aut autem')).not.toBeInTheDocument();
+    expect(screen.queryByText('delectus aut autem')).not.toBeInTheDocument();
   });
 
   it('displays error message when there is an error', () => {
