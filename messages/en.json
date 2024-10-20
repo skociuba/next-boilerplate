@@ -1,8 +1,4 @@
 {
-  "Home": {
-    "title": "BoilerPlate",
-    "content": "This is an example content"
-  },
   "Navbar": {
     "links": {
       "home": "Home",
@@ -12,5 +8,22 @@
       "pl": "Polish",
       "en": "English"
     }
+  },
+  "breakpoints": {
+    "panel": {
+      "links": {
+        "main": "Main Page",
+        "example": "Example Page"
+      }
+    }
+  },
+  "layout": {
+    "examplePage": {
+      "title": "Example Page"
+    }
+  },
+  "Home": {
+    "title": "BoilerPlate",
+    "content": "This is an example content"
   }
 }

@@ -1,21 +1,23 @@
 'use client';
 import React from 'react';
 
+import { Layout } from './../../components/Example/Layout';
 import { useApiQuery } from './../../hooks/api/useApiQuery';
 const Example = () => {
   const { data, isLoading, error } = useApiQuery({
     route: 'TODOS'
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>An error has occurred: {error.message}</div>;
-  }
-
   return (
-    <div className="mx-auto mt-4 px-4 max-w-screen-lg">
+    <Layout
+      {...{
+        title: 'examplePage.title',
+        breakpoints: [{ children: 'main', href: '/' }],
+        hideOnMobile: { title: true, subTitle: true },
+        loading: isLoading,
+        error: error?.message
+      }}
+    >
       {data && (
         <div>
           {Array.isArray(data) &&
@@ -26,7 +28,7 @@ const Example = () => {
             ))}
         </div>
       )}
-    </div>
+    </Layout>
   );
 };
 

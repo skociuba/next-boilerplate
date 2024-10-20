@@ -1,8 +1,4 @@
 {
-  "Home": {
-    "title": "Templatka",
-    "content": "To jest przykładowa treść"
-  },
   "Navbar": {
     "links": {
       "home": "Strona główna",
@@ -12,5 +8,22 @@
       "pl": "Polski",
       "en": "Angielski"
     }
+  },
+  "breakpoints": {
+    "panel": {
+      "links": {
+        "main": "Strona główna",
+        "example": "Przykładowa strona"
+      }
+    }
+  },
+  "layout": {
+    "examplePage": {
+      "title": "Przykładowa strona"
+    }
+  },
+  "Home": {
+    "title": "Templatka",
+    "content": "To jest przykładowa treść"
   }
 }
