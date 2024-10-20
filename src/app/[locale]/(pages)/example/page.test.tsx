@@ -12,17 +12,17 @@ describe('Example component', () => {
     jest.clearAllMocks();
   });
 
-  // it('displays loading state initially', () => {
-  //   (useApiQuery as jest.Mock).mockReturnValue({
-  //     data: null,
-  //     isLoading: true,
-  //     error: null
-  //   });
+  it('displays loading state initially', () => {
+    (useApiQuery as jest.Mock).mockReturnValue({
+      data: null,
+      isLoading: true,
+      error: null
+    });
 
-  //   render(<Example />);
+    render(<Example />);
 
-  //   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  // });
+    expect(screen.getByText('delectus aut autem')).not.toBeInTheDocument();
+  });
 
   it('displays error message when there is an error', () => {
     (useApiQuery as jest.Mock).mockReturnValue({

@@ -2,7 +2,6 @@ import { render, screen } from '@/tests/test-utils';
 import { NextIntlClientProvider } from 'next-intl';
 
 import HomePage from './page';
-import ReactQueryProvider from './providers/ReactQueryProvider';
 
 const messages = {
   Home: {
@@ -15,9 +14,7 @@ describe('HomePage ', () => {
   it('should render the children components', () => {
     render(
       <NextIntlClientProvider locale="pl" messages={messages}>
-        <ReactQueryProvider>
-          <HomePage />
-        </ReactQueryProvider>
+        <HomePage />
       </NextIntlClientProvider>
     );
 
