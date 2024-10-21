@@ -1,7 +1,6 @@
 import { render, screen } from '@/tests/test-utils';
-import { waitFor } from '@testing-library/react';
 //import userEvent from '@testing-library/user-event';
-
+import { waitFor } from '@testing-library/react';
 import { useApiQuery } from './../../hooks/api/useApiQuery';
 import Example from './page';
 
@@ -12,7 +11,7 @@ describe('Example component', () => {
     jest.clearAllMocks();
   });
 
-  it('displays loading state initially', () => {
+  it('displays loading state initially', async () => {
     (useApiQuery as jest.Mock).mockReturnValue({
       data: null,
       isLoading: true,
@@ -20,11 +19,12 @@ describe('Example component', () => {
     });
 
     render(<Example />);
-
-    expect(screen.queryByText('delectus aut autem')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('delectus aut autem')).not.toBeInTheDocument();
+    });
   });
 
-  it('displays error message when there is an error', () => {
+  it('displays error message when there is an error', async () => {
     (useApiQuery as jest.Mock).mockReturnValue({
       data: null,
       isLoading: false,
@@ -33,7 +33,9 @@ describe('Example component', () => {
 
     render(<Example />);
 
-    expect(screen.getByText('Failed to fetch')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch')).toBeInTheDocument();
+    });
   });
 
   it('displays data when fetch is successful', async () => {
