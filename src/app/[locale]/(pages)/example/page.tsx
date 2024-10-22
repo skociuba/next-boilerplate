@@ -1,9 +1,17 @@
 'use client';
-import React from 'react';
+import dynamic from 'next/dynamic';
 
 import { Layout } from './../../components/Example/Layout';
 import { useApiQuery } from './../../hooks/api/useApiQuery';
-const Example = () => {
+
+const Example = dynamic(
+  () => import('./../../components/PageComponents/Example').then((m) => m.Example),
+  {
+    ssr: false
+  }
+);
+
+const Page = () => {
   const { data, isLoading, error } = useApiQuery({
     route: 'TODOS'
   });
@@ -18,18 +26,9 @@ const Example = () => {
         error: error?.message
       }}
     >
-      {data && (
-        <div>
-          {Array.isArray(data) &&
-            data.map(({ title, id }: { title: string; id: string }) => (
-              <div key={id} className="flex flex-row">
-                <p className="w-2/3">{title}</p>
-              </div>
-            ))}
-        </div>
-      )}
+      <Example data={data} />
     </Layout>
   );
 };
 
-export default Example;
+export default Page;

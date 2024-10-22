@@ -1,15 +1,26 @@
-import { useTranslations } from 'next-intl';
+import dynamic from 'next/dynamic';
 
-const HomePage = () => {
-  const t = useTranslations('Home');
+import { Layout } from './../[locale]/components/Example/Layout';
+const HomeComponent = dynamic(
+  () =>
+    import('./../[locale]/components/PageComponents/MainComponent').then((m) => m.HomeComponent),
+  {
+    ssr: true
+  }
+);
 
+const Page = () => {
   return (
-    <div>
-      <section className="bg-white px-4 dark:bg-gray-900 my-8 flex justify-center">
-        {t(`title`)}
-      </section>
-      <span className="text-lg text-blue-500 font-bold">{t(`content`)}</span>
-    </div>
+    <Layout
+      {...{
+        title: 'homePage.title',
+        breakpoints: [{ children: 'main' }],
+        hideOnMobile: { title: true, subTitle: true }
+      }}
+    >
+      <HomeComponent />
+    </Layout>
   );
 };
-export default HomePage;
+
+export default Page;

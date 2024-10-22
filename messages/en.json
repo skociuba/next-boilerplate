@@ -20,6 +20,9 @@
   "layout": {
     "examplePage": {
       "title": "Example Page"
+    },
+    "homePage": {
+      "title": "Main Page"
     }
   },
   "Home": {
