@@ -83,7 +83,8 @@ const generateRequestUrl = ({
           encode: true,
           strictNullHandling: true,
           allowEmptyArrays: false,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           filter: (_prefix, value) => {
             if (value === '') {
               return undefined;
