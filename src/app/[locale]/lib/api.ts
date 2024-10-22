@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+// @ts-nocheck
 import qs from 'qs';
 
 import { API_ENDPOINTS, ApiKeysType } from './../hooks/api/apiEndpoints';
@@ -83,8 +82,6 @@ const generateRequestUrl = ({
           encode: true,
           strictNullHandling: true,
           allowEmptyArrays: false,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           filter: (_prefix, value) => {
             if (value === '') {
               return undefined;
@@ -93,8 +90,6 @@ const generateRequestUrl = ({
             return value;
           },
           encoder: (value, type) => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             if (type === 'key') {
               return value;
             }
