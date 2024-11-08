@@ -2,7 +2,8 @@
   "Navbar": {
     "links": {
       "home": "Home",
-      "example": "Example"
+      "example": "Example",
+      "static": "Static"
     },
     "language": {
       "pl": "Polish",
@@ -28,5 +29,10 @@
   "Home": {
     "title": "BoilerPlate",
     "content": "This is an example content"
+  },
+  "NotFound": {
+    "title": "Not Found",
+    "content": "Page does not exist",
+    "button": "Back to main page"
   }
 }

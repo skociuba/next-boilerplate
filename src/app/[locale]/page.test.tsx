@@ -1,7 +1,7 @@
-import { render, screen } from '@/tests/test-utils';
+import { render, screen, waitFor } from '@/tests/test-utils';
 import { NextIntlClientProvider } from 'next-intl';
 
-import HomePage from './page';
+import Page from './page';
 
 const messages = {
   Home: {
@@ -10,15 +10,16 @@ const messages = {
   }
 };
 
-describe('HomePage ', () => {
-  it('should render the children components', () => {
+describe('HomePage', () => {
+  it('should render the children components', async () => {
     render(
       <NextIntlClientProvider locale="pl" messages={messages}>
-        <HomePage />
+        <Page />
       </NextIntlClientProvider>
     );
 
-    // Assert
-    screen.getByText(/Templatka/i);
+    await waitFor(() => {
+      expect(screen.getByText(/Templatka/i)).toBeInTheDocument();
+    });
   });
 });

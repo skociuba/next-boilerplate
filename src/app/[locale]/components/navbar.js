@@ -4,7 +4,8 @@ import { useTranslations } from 'next-intl';
 import { usePathname, Link } from '../../../navigation';
 const NavLinks = [
   { id: 1, name: 'home', path: '/' },
-  { id: 2, name: 'example', path: '/example' }
+  { id: 2, name: 'example', path: '/example' },
+  { id: 3, name: 'static', path: '/static' }
 ];
 
 const Navbar = () => {
