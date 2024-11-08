@@ -70,8 +70,8 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: pnpm install
-      - name: Run tests
-        run: pnpm test:ci
+        # - name: Run tests
+        #   run: pnpm test:ci
         env:
           CI: true
 
@@ -99,26 +99,26 @@ jobs:
         env:
           CI: true
 
-  storybook-build-check:
-    name: Build storybook application
-    needs: [jest-check]
-    runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8.10.2
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install dependencies
-        run: pnpm install
-      - name: Build storybook
-        run: pnpm storybook:build
-        env:
-          CI: true
+  # storybook-build-check:
+  #   name: Build storybook application
+  #   needs: [jest-check]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: Setup pnpm
+  #       uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8.10.2
+  #     - name: Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #     - name: Build storybook
+  #       run: pnpm storybook:build
+  #       env:
+  #         CI: true

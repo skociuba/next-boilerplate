@@ -1,0 +1,38 @@
+{
+  "Navbar": {
+    "links": {
+      "home": "Home",
+      "example": "Example",
+      "static": "Static"
+    },
+    "language": {
+      "pl": "Polish",
+      "en": "English"
+    }
+  },
+  "breakpoints": {
+    "panel": {
+      "links": {
+        "main": "Main Page",
+        "example": "Example Page"
+      }
+    }
+  },
+  "layout": {
+    "examplePage": {
+      "title": "Example Page"
+    },
+    "homePage": {
+      "title": "Main Page"
+    }
+  },
+  "Home": {
+    "title": "BoilerPlate",
+    "content": "This is an example content"
+  },
+  "NotFound": {
+    "title": "Not Found",
+    "content": "Page does not exist",
+    "button": "Back to main page"
+  }
+}
