@@ -70,7 +70,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: pnpm install
-        # - name: Run tests
+      - name: Run tests
         #   run: pnpm test:ci
         env:
           CI: true
