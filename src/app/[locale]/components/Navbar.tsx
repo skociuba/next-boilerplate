@@ -2,6 +2,7 @@
 import { useTranslations } from 'next-intl';
 
 import { usePathname, Link } from '../../../navigation';
+import { ThemeSwitcher } from './ThemeSwitcher';
 const NavLinks = [
   { id: 1, name: 'home', path: '/' },
   { id: 2, name: 'example', path: '/example' },
@@ -11,7 +12,7 @@ const NavLinks = [
 const Navbar = () => {
   const pathname = usePathname();
   const t = useTranslations('Navbar');
-  const isActive = (path) => path === pathname;
+  const isActive = (path: string) => path === pathname;
 
   return (
     <nav className="flex h-20 w-full items-center justify-between border-b border-black">
@@ -45,6 +46,7 @@ const Navbar = () => {
         <Link href={pathname} locale="en">
           {t(`language.en`)}
         </Link>
+        <ThemeSwitcher className="" />
       </div>
     </nav>
   );
