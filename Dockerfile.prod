@@ -1,0 +1,20 @@
+# Etap budowania
+FROM node:22.1.0 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Etap produkcyjny
+FROM node:22.1.0 AS runner
+WORKDIR /app
+
+# Upewnij się, że katalog .next istnieje
+RUN mkdir -p .next
+
+COPY --from=build /app/.next ./.next
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
