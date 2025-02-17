@@ -1,9 +1,9 @@
-name: Test application generation
+name: Test and Deploy Next.js
 
 on:
   push:
     branches:
-      - master
+      - deploy # Deploy na EC2 tylko po pushu na `master`
 
   pull_request:
     types: [opened, synchronize, reopened]
@@ -12,8 +12,6 @@ jobs:
   prettier-check:
     name: Prettier check
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -33,8 +31,6 @@ jobs:
   eslint-check:
     name: Eslint check
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -55,8 +51,6 @@ jobs:
     name: Tests - jest
     needs: [prettier-check, eslint-check]
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -79,8 +73,6 @@ jobs:
     name: Build nextjs application
     needs: [jest-check]
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -99,3 +91,21 @@ jobs:
         env:
           CI: true
 
+  deploy:
+    name: Deploy to EC2
+    needs: [nextjs-build-check] # Deploy po przejściu wszystkich testów i builda
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/app || mkdir ~/app && cd ~/app
+            sudo docker-compose down
+            sudo rm -rf ./*
+            git clone https://github.com/${{ github.repository }} .
+            sudo docker-compose up --build -d

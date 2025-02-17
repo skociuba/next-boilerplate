@@ -1,8 +1,10 @@
 # Etap budowania
 FROM node:22.1.0 AS build
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm install
+RUN npm install --omit=dev  # Usuwamy devDependencies w produkcji
+
 COPY . .
 RUN npm run build
 
@@ -10,10 +12,11 @@ RUN npm run build
 FROM node:22.1.0 AS runner
 WORKDIR /app
 
-# Upewnij się, że katalog .next istnieje
-RUN mkdir -p .next
-
+# Kopiujemy tylko potrzebne pliki
+COPY --from=build /app/package.json ./
+COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
 
 EXPOSE 3000
 
