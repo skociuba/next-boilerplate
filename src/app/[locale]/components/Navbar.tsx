@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className="logo">
         <Link href="/">
           <p className="text-2xl font-bold">
-            Boiler<span className="text-blue-500">Plate</span>
+            Boilers<span className="text-blue-500">Plate</span>
           </p>
         </Link>
       </div>
@@ -34,7 +34,7 @@ const Navbar = () => {
                   : ''
               }
             >
-              {t(`links.${link.name}`)}
+              {t(`links.${link?.name}`)}
             </Link>
           </li>
         ))}

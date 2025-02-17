@@ -95,7 +95,7 @@ jobs:
     name: Deploy to EC2
     needs: [nextjs-build-check] # Deploy po przejściu wszystkich testów i builda
     runs-on: ubuntu-latest
-env:
+    env:
       APP_PORT: 3000
   steps:
   - name: Deploy to EC2
