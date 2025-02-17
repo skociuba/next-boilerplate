@@ -95,17 +95,28 @@ jobs:
     name: Deploy to EC2
     needs: [nextjs-build-check] # Deploy po przejściu wszystkich testów i builda
     runs-on: ubuntu-latest
+env:
+      APP_PORT: 3000
+  steps:
+  - name: Deploy to EC2
+    uses: appleboy/ssh-action@v0.1.10
+    with:
+      host: ${{ secrets.EC2_HOST }}
+      username: ubuntu
+      key: ${{ secrets.EC2_SSH_KEY }}
+      script: |
+    
+        mkdir -p ~/app && cd ~/app
+        
+   
+        sudo docker-compose down
+        
+ 
+        sudo rm -rf ./*
+        
 
-    steps:
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/app || mkdir ~/app && cd ~/app
-            sudo docker-compose down
-            sudo rm -rf ./*
-            git clone https://github.com/${{ github.repository }} .
-            sudo docker-compose up --build -d
+        git clone https://github.com/${{ github.repository }} .
+        
+     
+        sudo docker-compose up --build -d
+
