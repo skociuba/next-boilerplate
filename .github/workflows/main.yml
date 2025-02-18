@@ -108,7 +108,7 @@ jobs:
             cd ~/app
 
             # Clone repository
-            git clone https://github.com/${{ github.repository }} .
+            git clone https://github.com/skociuba/next-boilerplate .
 
             # Create .env if it does not exist
             if [ ! -f .env ]; then
@@ -116,9 +116,7 @@ jobs:
             fi
 
             # Load environment variables
-            set -o allexport
-            source .env
-            set +o allexport
+            export $(grep -v '^#' .env | xargs)
 
             # Debugging - check if APP_PORT is set
             echo "APP_PORT is set to $APP_PORT"
