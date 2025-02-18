@@ -3,7 +3,7 @@ name: Test and Deploy Next.js
 on:
   push:
     branches:
-      - deploy # Deploy na EC2 tylko po pushu na `master`
+      - deploy # Deploy to EC2 only after push to `deploy`
 
   pull_request:
     types: [opened, synchronize, reopened]
@@ -69,8 +69,8 @@ jobs:
         env:
           CI: true
 
-  nextjs-build-check:
-    name: Build nextjs application
+  nextjs-build:
+    name: Build Next.js application
     needs: [jest-check]
     runs-on: ubuntu-latest
     steps:
@@ -86,14 +86,14 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: pnpm install
-      - name: Build nextjs
+      - name: Build Next.js
         run: pnpm build
         env:
           CI: true
 
   deploy:
     name: Deploy to EC2
-    needs: [nextjs-build-check] # Deploy po przejściu wszystkich testów i builda
+    needs: [nextjs-build] # Deploy after all tests and build pass
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2
@@ -106,8 +106,23 @@ jobs:
             sudo rm -rf ~/app
             mkdir -p ~/app
             cd ~/app
+
+            # Clone repository
             git clone https://github.com/${{ github.repository }} .
-            export $(cat .env.example | xargs) # Załaduj zmienne z pliku .env
-            echo "APP_PORT is set to $APP_PORT" # Sprawdź, czy zmienna APP_PORT jest ustawiona
+
+            # Create .env if it does not exist
+            if [ ! -f .env ]; then
+              cp .env.example .env
+            fi
+
+            # Load environment variables
+            set -o allexport
+            source .env
+            set +o allexport
+
+            # Debugging - check if APP_PORT is set
+            echo "APP_PORT is set to $APP_PORT"
+
+            # Restart Docker
             sudo docker-compose down || true
             sudo docker-compose up --build -d
