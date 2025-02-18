@@ -107,7 +107,7 @@ jobs:
             mkdir -p ~/app
             cd ~/app
             git clone https://github.com/${{ github.repository }} .
-            export $(cat .env | xargs) # Załaduj zmienne z pliku .env
+            export $(cat .env.example | xargs) # Załaduj zmienne z pliku .env
             echo "APP_PORT is set to $APP_PORT" # Sprawdź, czy zmienna APP_PORT jest ustawiona
             sudo docker-compose down || true
             sudo docker-compose up --build -d
