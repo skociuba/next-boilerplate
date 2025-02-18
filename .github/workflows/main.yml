@@ -95,8 +95,6 @@ jobs:
     name: Deploy to EC2
     needs: [nextjs-build-check] # Deploy po przejściu wszystkich testów i builda
     runs-on: ubuntu-latest
-    env:
-      APP_PORT: 3000
     steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
@@ -109,6 +107,7 @@ jobs:
             mkdir -p ~/app
             cd ~/app
             git clone https://github.com/${{ github.repository }} .
-            export APP_PORT=3000
+            export $(cat .env | xargs) # Załaduj zmienne z pliku .env
+            echo "APP_PORT is set to $APP_PORT" # Sprawdź, czy zmienna APP_PORT jest ustawiona
             sudo docker-compose down || true
             sudo docker-compose up --build -d
