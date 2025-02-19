@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     ports:
-      - "${APP_PORT}:${APP_PORT}"
+      - '${APP_PORT}:${APP_PORT}'
     restart: always
     environment:
       - APP_PORT=${APP_PORT}
