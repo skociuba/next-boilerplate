@@ -12,3 +12,4 @@ services:
     environment:
       - APP_PORT=${APP_PORT}
       - NODE_ENV=production
+    command: ['sh', '-c', 'npm run start:prod']
