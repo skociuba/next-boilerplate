@@ -11,3 +11,5 @@ services:
     restart: always
     environment:
       - APP_PORT=${APP_PORT}
+      - NODE_ENV=production
+
