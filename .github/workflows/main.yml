@@ -116,6 +116,9 @@ jobs:
             # Debugging - check if APP_PORT is set
             echo "APP_PORT is set to $APP_PORT"
 
+            # Create a temporary .env file
+            echo "APP_PORT=$APP_PORT" > .env
+
             # Restart Docker
-            sudo docker-compose down || true
-            sudo -E docker-compose up --build -d
+            sudo docker-compose --env-file .env down || true
+            sudo docker-compose --env-file .env up --build -d
