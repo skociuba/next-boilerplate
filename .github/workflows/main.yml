@@ -117,5 +117,5 @@ jobs:
             echo "APP_PORT is set to $APP_PORT"
 
             # Restart Docker
-            sudo APP_PORT=$APP_PORT docker-compose down || true
-            sudo APP_PORT=$APP_PORT docker-compose up --build -d
+            sudo docker-compose down || true
+            sudo -E docker-compose up --build -d
