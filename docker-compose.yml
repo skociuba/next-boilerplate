@@ -11,4 +11,3 @@ services:
     restart: always
     environment:
       - APP_PORT=3000
-    command: ['npm', 'run', 'start:prod'] # Wymuszenie trybu produkcyjnego
