@@ -1,14 +1,10 @@
 version: '3.8'
 
 services:
-  next-boilerplate:
-    container_name: next-boilerplate
+  nextapp:
     build:
       context: .
       dockerfile: Dockerfile.prod
     ports:
-      - '3000:3000'
+      - '80:3000'
     restart: always
-    environment:
-      - APP_PORT=3000
-    command: ['npm', 'run', 'start:prod'] # Wymuszenie trybu produkcyjnego
