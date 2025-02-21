@@ -1,24 +1,50 @@
 # Etap budowania
-FROM node:22.1.0 AS build
+FROM node:22.1.0 AS base
+
+# Etap 1: Instalacja zależności
+FROM base AS dependencies
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --omit=dev  # Usuwamy devDependencies w produkcji
+# Kopiowanie plików package.json i package-lock.json
+COPY ./app/package.json ./app/package-lock.json ./
 
-COPY . .
+# Instalacja zależności (bez devDependencies dla produkcji)
+RUN npm install --omit=dev
+
+# Etap 2: Budowanie Next.js
+FROM base AS build
+WORKDIR /app
+
+# Kopiowanie zainstalowanych zależności
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Kopiowanie całej aplikacji
+COPY ./app .
+
+# Wyłączenie telemetrii Next.js
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Budowanie aplikacji
 RUN npm run build
 
-# Etap produkcyjny
-FROM node:22.1.0 AS runner
+# Etap 3: Finalny obraz produkcyjny
+FROM base AS runner
 WORKDIR /app
 
-# Kopiujemy tylko potrzebne pliki
-COPY --from=build /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
+# Ustawienia środowiska
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    HOSTNAME="0.0.0.0"
+
+# Kopiowanie folderu public
 COPY --from=build /app/public ./public
 
-EXPOSE 3000
+# Tworzenie katalogu na pliki Next.js
+RUN mkdir .next
 
-CMD ["sh", "-c", "npm run start:prod"]
+# Kopiowanie builda Next.js
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
 
+# Uruchamianie serwera aplikacji
+CMD ["node", "server.js"]
