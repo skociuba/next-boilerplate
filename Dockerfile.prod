@@ -1,9 +1,9 @@
 # Etap 1: Instalacja zależności
-FROM base AS dependencies
+FROM node:22.1.0 AS dependencies
 WORKDIR /app
 
 # Kopiowanie plików package.json i package-lock.json
-COPY app/package.json app/package-lock.json ./
+COPY package*.json ./
 
 # Wyłączenie skryptów postinstall
 ENV npm_config_lifecycle=false
@@ -12,17 +12,42 @@ ENV npm_config_lifecycle=false
 RUN npm install --omit=dev
 
 # Etap 2: Budowanie Next.js
-FROM base AS build
+FROM node:22.1.0 AS build
 WORKDIR /app
 
 # Kopiowanie zainstalowanych zależności
 COPY --from=dependencies /app/node_modules ./node_modules
 
 # Kopiowanie całej aplikacji
-COPY app .
+COPY . .
 
 # Wyłączenie telemetrii Next.js
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Budowanie aplikacji
 RUN npm run build
+
+# Etap 3: Finalny obraz produkcyjny
+FROM node:22.1.0 AS runner
+WORKDIR /app
+
+# Ustawienia środowiska
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    HOSTNAME="0.0.0.0"
+
+# Kopiowanie folderu public
+COPY --from=build /app/public ./public
+
+# Kopiowanie builda Next.js
+COPY --from=build /app/.next ./.next
+
+# Kopiowanie plików package.json i node_modules
+COPY --from=build /app/package.json ./
+COPY --from=build /app/node_modules ./node_modules
+
+# Eksponowanie portu 3000
+EXPOSE 3000
+
+# Uruchamianie serwera aplikacji
+CMD ["npm", "start"]
