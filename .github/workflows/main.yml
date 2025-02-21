@@ -69,22 +69,56 @@ jobs:
         env:
           CI: true
 
-  deploy:
+  nextjs-build:
+    name: Build Next.js application
+    needs: [jest-check]
     runs-on: ubuntu-latest
-
     steps:
-      - name: Pobranie kodu
+      - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.10.2
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build Next.js
+        run: pnpm build
+        env:
+          CI: true
 
-      - name: Kopiowanie kodu na EC2
-        run: |
-          scp -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no \s
-          -r . ec2-user@${{ secrets.EC2_IP }}:~/app/
-
-      - name: Restart Docker Compose na EC2
-        run: |
-          ssh -i ${{ secrets.EC2_SSH_KEY }} -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+  deploy:
+    name: Deploy to EC2
+    needs: [nextjs-build] # Deploy after all tests and build pass
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo rm -rf ~/app
+            mkdir -p ~/app
             cd ~/app
-            docker-compose down
-            docker-compose up -d --build
-          EOF
+
+            # Clone repository
+            git clone https://github.com/skociuba/next-boilerplate .
+
+            # Set environment variable directly
+            export APP_PORT=3000
+
+            # Debugging - check if APP_PORT is set
+            echo "APP_PORT is set to $APP_PORT"
+
+            # Create a temporary .env file
+            echo "APP_PORT=$APP_PORT" > .env
+
+            # Restart Docker
+            sudo docker-compose --env-file .env down || true
+            sudo docker-compose --env-file .env up --build -d

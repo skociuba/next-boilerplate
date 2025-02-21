@@ -1,25 +1,24 @@
-# Etap 1: Budowanie aplikacji Next.js
-FROM node:22.1.0 AS builder
+# Etap budowania
+FROM node:22.1.0 AS build
 WORKDIR /app
 
-# Kopiowanie plików i instalacja zależności
-COPY package.json package-lock.json ./
-RUN npm install --production
+COPY package*.json ./
+RUN npm install --omit=dev  # Usuwamy devDependencies w produkcji
 
 COPY . .
-
-# Budowanie aplikacji Next.js
 RUN npm run build
 
-# Etap 2: Uruchomienie aplikacji Next.js
-FROM node:18
+# Etap produkcyjny
+FROM node:22.1.0 AS runner
 WORKDIR /app
 
-# Kopiowanie plików z pierwszego etapu
-COPY --from=builder /app ./
+# Kopiujemy tylko potrzebne pliki
+COPY --from=build /app/package.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
 
-# Ustawienie zmiennych środowiskowych
-ENV NODE_ENV=production
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npm run start:prod"]
+
