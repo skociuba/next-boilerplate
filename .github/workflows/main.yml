@@ -101,7 +101,23 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo docker pull your-dockerhub-username/next-boilerplate:latest
-            sudo docker stop next-boilerplate || true
-            sudo docker rm next-boilerplate || true
-            sudo docker run -d --name next-boilerplate -p 3000:3000 --env-file .env your-dockerhub-username/next-boilerplate:latest
+            # Aktualizacja pakietów i instalacja Dockera (jeśli nie jest zainstalowany)
+            sudo apt update -y && sudo apt install -y docker.io
+
+            # Upewnienie się, że użytkownik "ubuntu" może uruchamiać Dockera bez sudo
+            sudo usermod -aG docker ubuntu
+
+            # Pobranie najnowszej wersji obrazu z Docker Hub
+            docker pull sebastiankociuba/next-boilerplate:latest
+
+            # Zatrzymanie i usunięcie starego kontenera (jeśli istnieje)
+            docker stop next-boilerplate || true
+            docker rm next-boilerplate || true
+
+            # Uruchomienie nowego kontenera w tle na porcie 3000
+            docker run -d \
+              --name next-boilerplate \
+              -p 3000:3000 \
+              --env-file /home/ubuntu/.env \
+              --restart unless-stopped \
+              sebastiankociuba/next-boilerplate:latest
