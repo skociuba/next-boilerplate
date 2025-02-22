@@ -1,53 +1,32 @@
-# Etap 1: Instalacja zależności
-FROM node:22.1.0 AS dependencies
-WORKDIR /app
-
-# Kopiowanie plików package.json i package-lock.json
-COPY package*.json ./
-
-# Wyłączenie skryptów postinstall
-ENV npm_config_lifecycle=false
-
-# Instalacja zależności (bez devDependencies dla produkcji)
-RUN npm install --omit=dev
-
-# Etap 2: Budowanie Next.js
-FROM node:22.1.0 AS build
-WORKDIR /app
-
-# Kopiowanie zainstalowanych zależności
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Kopiowanie całej aplikacji
+#Use base image for node application 
+FROM node:22.1.0 as builder
+# Set working directory to /app inside the container image 
+WORKDIR /app 
+# Copy app files 
 COPY . .
 
-# Wyłączenie telemetrii Next.js
-ENV NEXT_TELEMETRY_DISABLED=1
+# ====== BUILD ===== 
+# Install dependencies 
+RUN npm ci 
+# Build the app 
+RUN npm run build 
 
-# Budowanie aplikacji
-RUN npm run build
+# ===== RUN =====
 
-# Etap 3: Finalny obraz produkcyjny
-FROM node:22.1.0 AS runner
-WORKDIR /app
+# Bundle static assets with nginx. nginx is used for serving application that are large scale
+FROM nginx:1.21.0-alpine as production
 
-# Ustawienia środowiska
-ENV NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1 \
-    HOSTNAME="0.0.0.0"
+# Set the env to production 
+ENV NODE_ENV production 
 
-# Kopiowanie folderu public
-COPY --from=build /app/public ./public
+# Copy built assets from `builder` image. The image build on first stage. Copy data from source to destination path 
+COPY --from=builder /app/build /usr/share/nginx/html 
 
-# Kopiowanie builda Next.js
-COPY --from=build /app/.next ./.next
 
-# Kopiowanie plików package.json i node_modules
-COPY --from=build /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
-
-# Eksponowanie portu 3000
+# Expose the port on which the app will be running 
 EXPOSE 3000
 
-# Uruchamianie serwera aplikacji
-CMD ["npm", "start"]
+#Start the app for base image serving command 
+# CMD ["npx", "serve", "build"]
+
+CMD ["nginx", "-g", "daemon off;"]
