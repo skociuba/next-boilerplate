@@ -101,23 +101,43 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Aktualizacja pakietów i instalacja Dockera (jeśli nie jest zainstalowany)
-            sudo apt update -y && sudo apt install -y docker.io
+            echo "Start deployment on EC2..."
 
-            # Upewnienie się, że użytkownik "ubuntu" może uruchamiać Dockera bez sudo
+            # Usuń stare wersje Dockera i zainstaluj na nowo
+            echo "Aktualizacja pakietów i instalacja Dockera..."
+            sudo apt remove -y docker docker.io containerd containerd.io || true
+            sudo apt update -y
+            sudo apt install -y docker.io
+
+            # Ustaw uprawnienia dla Dockera
+            echo "Dodanie użytkownika ubuntu do grupy docker..."
             sudo usermod -aG docker ubuntu
+            newgrp docker  # Odświeżenie grupy, by uniknąć potrzeby wylogowania
 
-            # Pobranie najnowszej wersji obrazu z Docker Hub
+            # Pobierz najnowszy obraz Dockera
+            echo "Pobieranie najnowszego obrazu aplikacji..."
             docker pull sebastiankociuba/next-boilerplate:latest
 
-            # Zatrzymanie i usunięcie starego kontenera (jeśli istnieje)
+            # Zatrzymaj i usuń poprzedni kontener
+            echo "Zatrzymywanie starego kontenera (jeśli istnieje)..."
             docker stop next-boilerplate || true
             docker rm next-boilerplate || true
 
-            # Uruchomienie nowego kontenera w tle na porcie 3000
+            # Sprawdź, czy plik .env istnieje
+            if [ ! -f "/home/ubuntu/.env" ]; then
+              echo "Plik .env nie istnieje! Kontener uruchomi się bez niego."
+              ENV_OPTION=""
+            else
+              ENV_OPTION="--env-file /home/ubuntu/.env"
+            fi
+
+            # Uruchom kontener w tle na porcie 3000
+            echo "Uruchamianie nowego kontenera..."
             docker run -d \
               --name next-boilerplate \
               -p 3000:3000 \
-              --env-file /home/ubuntu/.env \
               --restart unless-stopped \
+              $ENV_OPTION \
               sebastiankociuba/next-boilerplate:latest
+
+            echo "Deployment zakończony sukcesem!"
