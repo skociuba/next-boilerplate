@@ -1,19 +1,22 @@
 version: '3.8'
+
 services:
   next-boilerplate:
     image: next-boilerplate
     container_name: next-boilerplate
     build:
       context: .
+      dockerfile: Dockerfile.prod # Wymuszenie użycia Dockerfile.prod
     ports:
       - '${APP_PORT}:${APP_PORT}'
     volumes:
       - ./app:/app
-      - node_modules:/app/node_modules # managed by docker. Restrict local yarn to get access
-      - build:/app/.next # managed by docker. Restrict local yarn to get access
+      - node_modules:/app/node_modules # zarządzane przez Docker
+      - build:/app/.next # zarządzane przez Docker
     env_file:
       - .env
 
 volumes:
   node_modules:
   build:
+

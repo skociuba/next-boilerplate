@@ -101,43 +101,17 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "Start deployment on EC2..."
-
-            # Usuń stare wersje Dockera i zainstaluj na nowo
-            echo "Aktualizacja pakietów i instalacja Dockera..."
-            sudo apt remove -y docker docker.io containerd containerd.io || true
             sudo apt update -y
-            sudo apt install -y docker.io
-
-            # Ustaw uprawnienia dla Dockera
-            echo "Dodanie użytkownika ubuntu do grupy docker..."
-            sudo usermod -aG docker ubuntu
-            newgrp docker  # Odświeżenie grupy, by uniknąć potrzeby wylogowania
-
-            # Pobierz najnowszy obraz Dockera
-            echo "Pobieranie najnowszego obrazu aplikacji..."
+            sudo apt install -y docker.io docker-compose
+      
+            # Pobranie najnowszego obrazu z Docker Hub
             docker pull sebastiankociuba/next-boilerplate:latest
-
-            # Zatrzymaj i usuń poprzedni kontener
-            echo "Zatrzymywanie starego kontenera (jeśli istnieje)..."
-            docker stop next-boilerplate || true
-            docker rm next-boilerplate || true
-
-            # Sprawdź, czy plik .env istnieje
-            if [ ! -f "/home/ubuntu/.env" ]; then
-              echo "Plik .env nie istnieje! Kontener uruchomi się bez niego."
-              ENV_OPTION=""
-            else
-              ENV_OPTION="--env-file /home/ubuntu/.env"
-            fi
-
-            # Uruchom kontener w tle na porcie 3000
-            echo "Uruchamianie nowego kontenera..."
-            docker run -d \
-              --name next-boilerplate \
-              -p 3000:3000 \
-              --restart unless-stopped \
-              $ENV_OPTION \
-              sebastiankociuba/next-boilerplate:latest
-
-            echo "Deployment zakończony sukcesem!"
+      
+            # Przejście do katalogu projektu (jeśli jest)
+            cd /home/ubuntu/app || mkdir -p /home/ubuntu/app && cd /home/ubuntu/app
+      
+            # Tworzenie pliku .env (jeśli nie istnieje)
+            echo "APP_PORT=3000" > .env
+      
+            # Uruchomienie aplikacji przez Docker Compose
+            docker-compose up -d --build
