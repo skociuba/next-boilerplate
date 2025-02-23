@@ -86,6 +86,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
+          context: .
+          file: Dockerfile.prod
           push: true
           tags: sebastiankociuba/next-boilerplate:latest
 
@@ -103,15 +105,15 @@ jobs:
           script: |
             sudo apt update -y
             sudo apt install -y docker.io docker-compose
-      
+
             # Pobranie najnowszego obrazu z Docker Hub
             docker pull sebastiankociuba/next-boilerplate:latest
-      
+
             # Przejście do katalogu projektu (jeśli jest)
             cd /home/ubuntu/app || mkdir -p /home/ubuntu/app && cd /home/ubuntu/app
-      
+
             # Tworzenie pliku .env (jeśli nie istnieje)
             echo "APP_PORT=3000" > .env
-      
+
             # Uruchomienie aplikacji przez Docker Compose
             docker-compose up -d --build
