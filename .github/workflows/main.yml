@@ -87,8 +87,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: sebastiankociuba/boilerplate-next:latest
-
+          tags: sebastiankociuba/next-boilerplate:latest
+          file: Dockerfile.prod
   deploy:
     name: Deploy to EC2
     needs: [build]
@@ -102,16 +102,14 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo apt update -y
-            sudo apt install -y docker.io docker-compose
-
-            # Przejście do katalogu projektu (jeśli jest)
-            cd /home/ubuntu/app || mkdir -p /home/ubuntu/app && cd /home/ubuntu/app
-
-            # Tworzenie pliku .env (jeśli nie istnieje)
-            echo "APP_PORT=3000" > .env
+            sudo apt install -y docker.io
 
             # Pobranie najnowszego obrazu z Docker Hub
-            docker-compose pull
+            docker pull sebastiankociuba/next-boilerplate:latest
 
-            # Uruchomienie aplikacji przez Docker Compose
-            docker-compose up -d
+            # Zatrzymanie i usunięcie starego kontenera, jeśli istnieje
+            docker stop next-boilerplate || true
+            docker rm next-boilerplate || true
+
+            # Uruchomienie nowego kontenera
+            docker run -d -p 3000:3000 --name next-boilerplate sebastiankociuba/next-boilerplate:latest
