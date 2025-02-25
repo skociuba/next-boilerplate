@@ -5,7 +5,7 @@ services:
     container_name: next-boilerplate
     build:
       context: .
-      dockerfile: Dockerfile.prod # Wymuszenie użycia Dockerfile.prod
+      dockerfile: Dockerfile.prod
     ports:
       - '3000:3000'
     volumes:
