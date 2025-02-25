@@ -89,28 +89,28 @@ jobs:
           push: true
           tags: sebastiankociuba/next-boilerplate:latest
           file: Dockerfile.prod
-deploy:
-  name: Deploy to EC2
-  needs: [build]
-  runs-on: ubuntu-latest
-  steps:
-    - name: Deploy Container on EC2
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          sudo apt update -y
-          sudo apt install -y docker.io
+  deploy:
+    name: Deploy to EC2
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Container on EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo apt update -y
+            sudo apt install -y docker.io
 
-          # Pobranie najnowszego obrazu z Docker Hub
-          docker pull sebastiankociuba/next-boilerplate:latest
+            # Pobranie najnowszego obrazu z Docker Hub
+            docker pull sebastiankociuba/next-boilerplate:latest
 
-          # Zatrzymanie i usunięcie starego kontenera, jeśli istnieje
-          docker stop next-boilerplate || true
-          docker rm next-boilerplate || true
+            # Zatrzymanie i usunięcie starego kontenera, jeśli istnieje
+            docker stop next-boilerplate || true
+            docker rm next-boilerplate || true
 
-          # Uruchomienie nowego kontenera
-          docker run -d -p 3000:3000 --name next-boilerplate sebastiankociuba/next-boilerplate:latest
+            # Uruchomienie nowego kontenera
+            docker run -d -p 3000:3000 --name next-boilerplate sebastiankociuba/next-boilerplate:latest
 
