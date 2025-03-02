@@ -1,13 +1,12 @@
+version: '3.8'
 services:
-  next-boilerplate:
-    container_name: next-boilerplate
+  nextjs-app:
     build:
       context: .
       dockerfile: Dockerfile.prod
+    image: sebastiankociuba/next-boilerplate:latest
+    container_name: nextjs-app
     ports:
-      - '3000:3000'
-    env_file:
-      - .env
+      - "3000:3000"
     environment:
       - NODE_ENV=production
-    restart: unless-stopped

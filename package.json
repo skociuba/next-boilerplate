@@ -7,7 +7,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "start:prod": "NODE_ENV=production next start -p $APP_PORT",
     "prettier:format": "prettier --write .",
     "prettier:check": "prettier --check \"**/*.{ts,tsx,json}\"",
     "lint": "next lint",
