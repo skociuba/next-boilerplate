@@ -116,4 +116,7 @@ jobs:
             docker rm next-boilerplate || true
 
             # Uruchomienie nowego kontenera
-            docker run -d -p 3000:3000 --name next-boilerplate sebastiankociuba/next-boilerplate:latest
+            docker stop next-boilerplate || true
+            docker rm next-boilerplate || true
+            docker pull sebastiankociuba/next-boilerplate:latest
+            docker run -d --restart unless-stopped -p 3000:3000 --name next-boilerplate sebastiankociuba/next-boilerplate:latest
