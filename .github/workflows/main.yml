@@ -3,7 +3,7 @@ name: Test and Deploy Next.js
 on:
   push:
     branches:
-      - deploy # Deploy to EC2 only after push to `deploy`
+      - master
 
   pull_request:
     types: [opened, synchronize, reopened]
