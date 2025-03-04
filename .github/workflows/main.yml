@@ -1,4 +1,4 @@
-name: Test application generation
+name: Test and Deploy Next.js
 
 on:
   push:
@@ -12,11 +12,9 @@ jobs:
   prettier-check:
     name: Prettier check
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -33,8 +31,6 @@ jobs:
   eslint-check:
     name: Eslint check
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -55,8 +51,6 @@ jobs:
     name: Tests - jest
     needs: [prettier-check, eslint-check]
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -75,27 +69,51 @@ jobs:
         env:
           CI: true
 
-  nextjs-build-check:
-    name: Build nextjs application
+  build:
+    name: Build Docker Image
     needs: [jest-check]
     runs-on: ubuntu-latest
-    env:
-      SKIP_ENV_VALIDATION: ${{ secrets.SKIP_ENV_VALIDATION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          version: 8.10.2
-      - name: Setup node
-        uses: actions/setup-node@v3
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
         with:
-          node-version: 18
-      - name: Install dependencies
-        run: pnpm install
-      - name: Build nextjs
-        run: pnpm build
-        env:
-          CI: true
+          context: .
+          file: Dockerfile.prod
+          push: true
+          tags: sebastiankociuba/next-boilerplate:latest
 
+  deploy:
+    name: Deploy to EC2
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Container on EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo apt update -y
+            sudo apt install -y docker.io
+
+            # Pobranie najnowszego obrazu z Docker Hub
+            docker pull sebastiankociuba/next-boilerplate:latest
+
+            # Zatrzymanie i usunięcie starego kontenera, jeśli istnieje
+            docker stop next-boilerplate || true
+            docker rm next-boilerplate || true
+
+            # Uruchomienie nowego kontenera
+            docker run -d --restart unless-stopped -p 3000:3000 --name next-boilerplate sebastiankociuba/next-boilerplate:latest
